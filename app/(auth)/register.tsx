@@ -1,0 +1,119 @@
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Link } from 'expo-router';
+import { UserPlus } from 'lucide-react-native';
+
+export default function RegisterScreen() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+
+  const handleRegister = () => {
+    // TODO: Implement Firebase registration
+  };
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.header}>
+        <UserPlus size={48} color='#000' />
+        <Text style={styles.title}>Créer un compte</Text>
+        <Text style={styles.subtitle}>Rejoignez la communauté SportMatch</Text>
+      </View>
+
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder='Nom complet'
+          value={name}
+          onChangeText={setName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Email'
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize='none'
+          keyboardType='email-address'
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Mot de passe'
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleRegister}>
+          <Text style={styles.buttonText}>S'inscrire</Text>
+        </TouchableOpacity>
+
+        <Link href='/login' asChild>
+          <TouchableOpacity style={styles.linkButton}>
+            <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
+          </TouchableOpacity>
+        </Link>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff'
+  },
+  content: {
+    padding: 20
+  },
+  header: {
+    alignItems: 'center',
+    marginTop: 80,
+    marginBottom: 50
+  },
+  title: {
+    fontFamily: 'Inter-Bold',
+    fontSize: 32,
+    marginTop: 20
+  },
+  subtitle: {
+    fontFamily: 'Inter-Regular',
+    fontSize: 16,
+    color: '#666',
+    marginTop: 10
+  },
+  form: {
+    gap: 15
+  },
+  input: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    fontFamily: 'Inter-Regular'
+  },
+  button: {
+    height: 50,
+    backgroundColor: '#007AFF',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold'
+  },
+  linkButton: {
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  linkText: {
+    color: '#007AFF',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular'
+  }
+});
