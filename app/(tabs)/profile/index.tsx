@@ -62,7 +62,7 @@ export default function ProfileScreen() {
         <Text style={styles.email}>{email}</Text>
         <Text style={styles.info}>Sports favoris : Football, Tennis</Text>
 
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton} onPress={() => router.push('/profile/edit')}>
           <Text style={styles.editButtonText}>Modifier le profil</Text>
         </TouchableOpacity>
 
