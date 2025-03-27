@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { UserPlus } from 'lucide-react-native';
+import { UserPlus, Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
 
 export default function RegisterScreen() {
@@ -9,6 +9,7 @@ export default function RegisterScreen() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleRegister = async () => {
@@ -18,19 +19,10 @@ export default function RegisterScreen() {
       email: email,
       password: password,
       options: {
-        data: {
-          first_name: firstName,
-          last_name: lastName,
-          role: 'default'
-        }
-      }
+        data: { first_name: firstName, last_name: lastName, role: 'default' },
+      },
     });
 
-    if (error) {
-      Alert.alert("Erreur", error.message);
-    } else {
-      router.replace('/');
-    }
     if (error) {
       Alert.alert("Erreur", error.message);
     } else {
@@ -67,13 +59,22 @@ export default function RegisterScreen() {
           autoCapitalize='none'
           keyboardType='email-address'
         />
-        <TextInput
-          style={styles.input}
-          placeholder='Mot de passe'
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { flex: 1, borderWidth: 0, paddingHorizontal: 0 }]}
+            placeholder='Mot de passe'
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+            {showPassword ? (
+              <EyeOff size={20} color="#666" />
+            ) : (
+              <Eye size={20} color="#666" />
+            )}
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>S'inscrire</Text>
@@ -124,6 +125,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     fontFamily: 'Inter-Regular',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    height: 50,
+  },
+  eyeButton: {
+    marginLeft: 10,
   },
   button: {
     height: 50,
