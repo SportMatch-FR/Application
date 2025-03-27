@@ -9,24 +9,129 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useSearchParams } from 'expo-router/build/hooks';
+import { useLocalSearchParams } from 'expo-router';
+import { conversationsData } from '@/app/data/data';
 
 export default function ChatConversationScreen() {
-  const { conversationId } = useSearchParams();
+  const { conversationId } = useLocalSearchParams();
+  const conversation = conversationsData.find((c) => c.id === conversationId);
+
+  const [messages, setMessages] = useState([
+    {
+      id: '1',
+      text: 'Salut !',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:30:00'
+    },
+    {
+      id: '2',
+      text: 'Salut, ça va ?',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:31:00'
+    },
+    {
+      id: '3',
+      text: 'Oui, et toi ?',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:32:00'
+    },
+    {
+      id: '4',
+      text: 'Ça va bien, merci.',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:33:00'
+    },
+    {
+      id: '5',
+      text: 'Quoi de neuf ?',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:34:00'
+    },
+    {
+      id: '6',
+      text: 'Pas grand-chose, et toi ?',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:35:00'
+    },
+    {
+      id: '7',
+      text: 'Je suis en route pour le match.',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:36:00'
+    },
+    {
+      id: '8',
+      text: 'Super, bonne chance !',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:37:00'
+    },
+    {
+      id: '9',
+      text: 'Merci, à plus tard.',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:38:00'
+    },
+    {
+      id: '10',
+      text: 'À bientôt.',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:39:00'
+    },
+    {
+      id: '11',
+      text: 'On se revoit pour un café ?',
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:40:00'
+    },
+    {
+      id: '12',
+      text: 'Avec plaisir !',
+      sender: 'self',
+      senderName: 'Vous',
+      timestamp: '2025-03-27T12:41:00'
+    },
+    {
+      id: '13',
+      text: "Parfait, à tout à l'heure.",
+      sender: 'other',
+      senderName: 'Alice Martin',
+      timestamp: '2025-03-27T12:42:00'
+    }
+  ]);
 
   const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([
-    { id: '1', text: 'Salut !', sender: 'other' },
-    { id: '2', text: 'Comment ça va ?', sender: 'self' }
-  ]);
 
   const handleSend = () => {
     if (!message.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now().toString(), text: message, sender: 'self' }
-    ]);
+    const newMessage = {
+      id: Date.now().toString(),
+      text: message,
+      sender: 'self',
+      senderName: 'You',
+      timestamp: new Date().toISOString()
+    };
+    setMessages((prev) => [...prev, newMessage]);
     setMessage('');
+  };
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    const dateLabel = isToday ? "Aujourd'hui" : date.toLocaleDateString('fr-FR');
+    const timeLabel = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    return `${dateLabel}, ${timeLabel}`;
   };
 
   return (
@@ -34,7 +139,24 @@ export default function ChatConversationScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Conversation {conversationId}</Text>
+        <Text style={styles.headerTitle}>
+          {conversation?.sport} - {conversation?.location}
+        </Text>
+      </View>
+
+      <View style={styles.participantsContainer}>
+        <Text style={styles.participantsHeader}>Participants:</Text>
+        <FlatList
+          data={conversation?.participants}
+          horizontal
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.participantBadge}>
+              <Text style={styles.participantText}>{item}</Text>
+            </View>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
 
       <FlatList
@@ -43,14 +165,19 @@ export default function ChatConversationScreen() {
         renderItem={({ item }) => {
           const isSelf = item.sender === 'self';
           return (
-            <View
-              style={[
-                styles.messageBubble,
-                isSelf ? styles.selfMessage : styles.otherMessage
-              ]}>
-              <Text style={isSelf ? styles.messageTextSelf : styles.messageTextOther}>
-                {item.text}
+            <View style={styles.messageContainer}>
+              <Text style={[styles.messageInfo, isSelf && styles.messageInfoSelf]}>
+                {item.senderName} - {formatTimestamp(item.timestamp)}
               </Text>
+              <View
+                style={[
+                  styles.messageBubble,
+                  isSelf ? styles.selfMessage : styles.otherMessage
+                ]}>
+                <Text style={isSelf ? styles.messageTextSelf : styles.messageTextOther}>
+                  {item.text}
+                </Text>
+              </View>
             </View>
           );
         }}
@@ -85,25 +212,61 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Bold',
     color: '#fff'
   },
+  participantsContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: '#eee'
+  },
+  participantsHeader: {
+    fontSize: 16,
+    fontFamily: 'Inter-Bold',
+    marginBottom: 5,
+    color: '#007AFF'
+  },
+  participantBadge: {
+    backgroundColor: '#e0f0ff',
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    marginRight: 10
+  },
+  participantText: {
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
+    color: '#007AFF'
+  },
   chatContent: {
     padding: 20,
     flexGrow: 1
+  },
+  messageContainer: {
+    marginBottom: 15
+  },
+  messageInfo: {
+    fontSize: 12,
+    fontFamily: 'Inter-Regular',
+    color: '#666',
+    marginBottom: 3,
+    alignSelf: 'flex-start'
+  },
+  messageInfoSelf: {
+    alignSelf: 'flex-end'
   },
   messageBubble: {
     maxWidth: '80%',
     padding: 10,
     borderRadius: 8,
-    marginBottom: 10
   },
   selfMessage: {
     backgroundColor: '#007AFF',
     alignSelf: 'flex-end',
-    borderTopRightRadius: 0
+    borderTopRightRadius: 0,
   },
   otherMessage: {
     backgroundColor: '#f0f0f0',
     alignSelf: 'flex-start',
-    borderTopLeftRadius: 0
+    borderTopLeftRadius: 0,
   },
   messageTextSelf: {
     fontSize: 16,
