@@ -57,8 +57,6 @@ export default function EditProfileScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.headerTitle}>Modifier mon profil</Text>
-
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -97,13 +95,6 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
-  headerTitle: {
-    fontSize: 34,
-    fontFamily: 'Inter-Bold',
-    color: '#007AFF',
-    textAlign: 'center',
-    marginVertical: 20,
-  },
   form: {
     gap: 15,
   },
@@ -135,7 +126,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
   },
   cancelButtonText: {
     color: '#333',

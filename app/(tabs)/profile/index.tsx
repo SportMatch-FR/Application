@@ -47,12 +47,6 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['rgba(0,0,0,0.6)', 'transparent']}
-        style={styles.header}>
-        <Text style={styles.headerTitle}>Mon Profil</Text>
-      </LinearGradient>
-
       <View style={styles.profileContainer}>
         <Image
           source={{ uri: avatarUrl }}
@@ -89,11 +83,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
     paddingVertical: 10,
-  },
-  headerTitle: {
-    fontSize: 34,
-    fontFamily: 'Inter-Bold',
-    color: '#fff',
   },
   profileContainer: {
     alignItems: 'center',
