@@ -1,3 +1,19 @@
+//Sample sport data
+export const sportsListData = [
+  {
+    id: '1',
+    name: 'Futsal',
+  },
+  {
+    id: '2',
+    name: 'Tennis',
+  },
+  {
+    id: '3',
+    name: 'Basketball',
+  }
+];
+
 // Sample conversation data
 export const conversationsData = [
   {
