@@ -15,6 +15,8 @@
     "@lucide/lab": "^0.1.2",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@supabase/auth-js": "^2.69.1",
+    "@supabase/supabase-js": "^2.49.3",
     "expo": "52.0.33",
     "expo-blur": "^14.0.3",
     "expo-camera": "^16.0.18",
@@ -45,7 +47,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@types/react": "~18.3.12",''
+    "@types/react": "~18.3.12",
     "typescript": "^5.3.3"
   }
 }

@@ -1,14 +1,24 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Link } from 'expo-router';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { Link, useRouter } from 'expo-router';
 import { LogIn } from 'lucide-react-native';
+import { supabase } from '@/supabaseClient';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const router = useRouter();
 
-  const handleLogin = () => {
-    // TODO: Implement Firebase authentication
+  const handleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) {
+      Alert.alert("Erreur", error.message);
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -54,26 +64,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20
+    padding: 20,
   },
   header: {
     alignItems: 'center',
     marginTop: 100,
-    marginBottom: 50
+    marginBottom: 50,
   },
   title: {
     fontFamily: 'Inter-Bold',
     fontSize: 32,
-    marginTop: 20
+    marginTop: 20,
   },
   subtitle: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     color: '#666',
-    marginTop: 10
+    marginTop: 10,
   },
   form: {
-    gap: 15
+    gap: 15,
   },
   input: {
     height: 50,
@@ -82,7 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    fontFamily: 'Inter-Regular'
+    fontFamily: 'Inter-Regular',
   },
   button: {
     height: 50,
@@ -90,21 +100,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold'
+    fontFamily: 'Inter-SemiBold',
   },
   linkButton: {
     height: 50,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   linkText: {
     color: '#007AFF',
     fontSize: 16,
-    fontFamily: 'Inter-Regular'
-  }
+    fontFamily: 'Inter-Regular',
+  },
 });

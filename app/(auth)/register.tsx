@@ -1,15 +1,41 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Link } from 'expo-router';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { Link, useRouter } from 'expo-router';
 import { UserPlus } from 'lucide-react-native';
+import { supabase } from '@/supabaseClient';
 
 export default function RegisterScreen() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const router = useRouter();
 
-  const handleRegister = () => {
-    // TODO: Implement Firebase registration
+  const handleRegister = async () => {
+    console.log('firstName:', firstName, 'lastName:', lastName);
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          role: 'default'
+        }
+      }
+    });
+
+    if (error) {
+      Alert.alert("Erreur", error.message);
+    } else {
+      router.replace('/');
+    }
+    if (error) {
+      Alert.alert("Erreur", error.message);
+    } else {
+      router.replace('/');
+    }
   };
 
   return (
@@ -23,9 +49,15 @@ export default function RegisterScreen() {
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder='Nom complet'
-          value={name}
-          onChangeText={setName}
+          placeholder='Prénom'
+          value={firstName}
+          onChangeText={setFirstName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Nom de famille'
+          value={lastName}
+          onChangeText={setLastName}
         />
         <TextInput
           style={styles.input}
@@ -60,29 +92,29 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   content: {
-    padding: 20
+    padding: 20,
   },
   header: {
     alignItems: 'center',
     marginTop: 80,
-    marginBottom: 50
+    marginBottom: 50,
   },
   title: {
     fontFamily: 'Inter-Bold',
     fontSize: 32,
-    marginTop: 20
+    marginTop: 20,
   },
   subtitle: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     color: '#666',
-    marginTop: 10
+    marginTop: 10,
   },
   form: {
-    gap: 15
+    gap: 15,
   },
   input: {
     height: 50,
@@ -91,7 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    fontFamily: 'Inter-Regular'
+    fontFamily: 'Inter-Regular',
   },
   button: {
     height: 50,
@@ -99,21 +131,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold'
+    fontFamily: 'Inter-SemiBold',
   },
   linkButton: {
     height: 50,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   linkText: {
     color: '#007AFF',
     fontSize: 16,
-    fontFamily: 'Inter-Regular'
-  }
+    fontFamily: 'Inter-Regular',
+  },
 });
