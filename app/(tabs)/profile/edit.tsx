@@ -78,10 +78,6 @@ export default function EditProfileScreen() {
             <Text style={styles.buttonText}>Sauvegarder</Text>
           )}
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
-          <Text style={styles.cancelButtonText}>Annuler</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -119,18 +115,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontFamily: 'Inter-SemiBold',
-  },
-  cancelButton: {
-    height: 50,
-    backgroundColor: '#ccc',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    color: '#333',
-    fontSize: 16,
-    fontFamily: 'Inter-Regular',
   },
   loaderContainer: {
     flex: 1,
