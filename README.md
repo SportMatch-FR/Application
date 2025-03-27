@@ -52,9 +52,7 @@
         },
       });
       ```
-
-Here's one way to improve the formatting in your README:
-
+      
 ## Running the App
 
 To start the project in development mode, run one of the following commands:
