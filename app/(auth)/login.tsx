@@ -1,20 +1,31 @@
 import { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { LogIn, Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
+import { loginSchema } from '@/app/validations/validation';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async () => {
+    const validationResult = loginSchema.safeParse({ email, password });
+    if (!validationResult.success) {
+      const errors = validationResult.error.errors.map(err => err.message).join("\n");
+      Alert.alert("Erreur de validation", errors);
+      return;
+    }
+
+    setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+    setIsLoading(false);
     if (error) {
       Alert.alert("Erreur", error.message);
     } else {
@@ -23,7 +34,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
         <LogIn size={48} color='#000' />
         <Text style={styles.title}>SportMatch</Text>
@@ -47,10 +58,7 @@ export default function LoginScreen() {
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
           />
-          <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={styles.eyeButton}
-          >
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
             {showPassword ? (
               <EyeOff size={20} color="#666" />
             ) : (
@@ -59,8 +67,12 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Se connecter</Text>
+        <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>Se connecter</Text>
+          )}
         </TouchableOpacity>
 
         <Link href='/register' asChild>
@@ -69,7 +81,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </Link>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -77,6 +89,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    padding: 20,
+  },
+  content: {
     padding: 20,
   },
   header: {

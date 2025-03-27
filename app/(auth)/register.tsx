@@ -1,28 +1,44 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { UserPlus, Eye, EyeOff } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
+import { registerSchema } from '@/app/validations/validation';
 
 export default function RegisterScreen() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async () => {
-    console.log('firstName:', firstName, 'lastName:', lastName);
+    const validationResult = registerSchema.safeParse({
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    });
+    if (!validationResult.success) {
+      const errorMessages = validationResult.error.errors.map(err => err.message).join("\n");
+      Alert.alert("Erreur de validation", errorMessages);
+      return;
+    }
 
+    setIsLoading(true);
     const { data, error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
+      email,
+      password,
       options: {
         data: { first_name: firstName, last_name: lastName, role: 'default' },
       },
     });
-
+    setIsLoading(false);
     if (error) {
       Alert.alert("Erreur", error.message);
     } else {
@@ -75,9 +91,29 @@ export default function RegisterScreen() {
             )}
           </TouchableOpacity>
         </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            style={[styles.input, { flex: 1, borderWidth: 0, paddingHorizontal: 0 }]}
+            placeholder='Confirmer le mot de passe'
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            secureTextEntry={!showConfirmPassword}
+          />
+          <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton}>
+            {showConfirmPassword ? (
+              <EyeOff size={20} color="#666" />
+            ) : (
+              <Eye size={20} color="#666" />
+            )}
+          </TouchableOpacity>
+        </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleRegister}>
-          <Text style={styles.buttonText}>S'inscrire</Text>
+        <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>S'inscrire</Text>
+          )}
         </TouchableOpacity>
 
         <Link href='/login' asChild>
