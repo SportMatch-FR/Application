@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-import { getUserId, getUserEvents } from '@/app/services/supabaseService';
+import { getUserId, getUserEvents, deleteEvent } from '@/app/services/supabaseService';
 
 export default function MyEventsScreen() {
   const [loading, setLoading] = useState(true);
@@ -15,7 +15,6 @@ export default function MyEventsScreen() {
           setLoading(false);
           return;
         }
-
         const data = await getUserEvents();
         setEvents(data);
       } catch (error) {
@@ -28,6 +27,29 @@ export default function MyEventsScreen() {
 
     loadEvents();
   }, []);
+
+  const handleDeleteEvent = (event_id: string) => {
+    Alert.alert(
+      "Confirmation",
+      "Voulez-vous vraiment supprimer cet événement ?",
+      [
+        { text: "Annuler", style: "cancel" },
+        {
+          text: "Supprimer",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteEvent(event_id);
+              setEvents(events.filter((e) => e.id.toString() !== event_id));
+              Alert.alert("Succès", "Événement supprimé !");
+            } catch (error: any) {
+              Alert.alert("Erreur", error.message);
+            }
+          }
+        }
+      ]
+    );
+  };
 
   const renderEventItem = ({ item }: { item: any }) => {
     const eventDate = new Date(item.date).toLocaleString('fr-FR', {
@@ -52,7 +74,7 @@ export default function MyEventsScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => Alert.alert('Supprimer', `Supprimer l'événement ID : ${item.id}`)}
+            onPress={() => handleDeleteEvent(item.id.toString())}
           >
             <Text style={styles.deleteButtonText}>Supprimer</Text>
           </TouchableOpacity>
@@ -99,7 +121,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     marginBottom: 15,
-    // Ombre iOS, élévation Android
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

@@ -76,3 +76,15 @@ export async function getUserEvents() {
     throw err;
   }
 }
+
+export async function deleteEvent(event_id: string) {
+  const { data, error } = await supabase.functions.invoke('deleteEvent', {
+    body: { event_id },
+  });
+
+  if (error) {
+    console.error('deleteEvent error:', error);
+    throw error;
+  }
+  return data;
+}
