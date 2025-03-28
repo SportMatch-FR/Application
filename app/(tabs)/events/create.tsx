@@ -136,9 +136,11 @@ export default function CreateEventScreen() {
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleDateChange}
+          minimumDate={new Date()}
           locale="fr-FR"
         />
       )}
+
 
       <Text style={styles.label}>Participants</Text>
       <TextInput
