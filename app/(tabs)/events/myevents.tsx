@@ -7,7 +7,7 @@ export default function MyEventsScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
-  
+
   const loadEvents = useCallback(async () => {
     try {
       setLoading(true);
