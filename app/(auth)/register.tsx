@@ -10,7 +10,7 @@ import {
   View
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { Eye, EyeOff, UserPlus } from 'lucide-react-native';
+import { Divide, Eye, EyeOff, UserPlus } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
 import { registerSchema } from '@/app/validations/validation';
 
@@ -125,11 +125,9 @@ export default function RegisterScreen() {
           )}
         </TouchableOpacity>
 
-        <Link href='/login' asChild>
-          <TouchableOpacity style={styles.linkButton}>
-            <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity style={styles.linkButton} onPress={() => router.back()}>
+          <Text style={styles.linkText}>Déjà un compte ? Se connecter</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
