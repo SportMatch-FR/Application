@@ -25,9 +25,9 @@ export const editProfileSchema = z.object({
 });
 
 export const eventCreateSchema = z.object({
-  sport: z.string().min(1, "Le sport est requis."),
+  sport: z.number().min(1, "Le sport est requis."),
   location: z.string().min(1, "La localisation est requise."),
-  city: z.string().min(1, "La ville est requise."),
+  city: z.number().min(1, "La ville est requise."),
   date: z.date(),
   participants: z.coerce.number().min(1, "Le nombre de participants doit être >= 1"),
 });

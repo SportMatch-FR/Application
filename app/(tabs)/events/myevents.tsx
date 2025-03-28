@@ -1,55 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
-
-const mockUserEvents = [
-  {
-    id: '1',
-    sport: 'Futsal',
-    location: 'City Sports Center',
-    city: 'Paris',
-    date: '2025-04-01T10:00:00',
-    participants: 10,
-  },
-  {
-    id: '2',
-    sport: 'Tennis',
-    location: 'Local Tennis Club',
-    city: 'Lyon',
-    date: '2025-04-03T15:30:00',
-    participants: 4,
-  },
-  {
-    id: '3',
-    sport: 'Basketball',
-    location: 'City Basketball Court',
-    city: 'Marseille',
-    date: '2025-04-10T18:45:00',
-    participants: 8,
-  },
-];
+import { getUserId, getUserEvents } from '@/app/services/supabaseService';
 
 export default function MyEventsScreen() {
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setEvents(mockUserEvents);
-      setLoading(false);
-    }, 1000);
+    const loadEvents = async () => {
+      try {
+        const userId = await getUserId();
+        if (!userId) {
+          Alert.alert('Erreur', 'Utilisateur non authentifié.');
+          setLoading(false);
+          return;
+        }
+
+        const data = await getUserEvents();
+        setEvents(data);
+      } catch (error) {
+        Alert.alert('Erreur', 'Impossible de charger vos événements.');
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadEvents();
   }, []);
 
-  const handleEdit = (eventId) => {
-    // TODO: Navigate to an edit screen for this event
-    Alert.alert('Edit event', `Edit event with ID: ${eventId}`);
-  };
-
-  const handleDelete = (eventId) => {
-    // TODO: Prompt confirmation, then delete from your backend
-    Alert.alert('Delete event', `Delete event with ID: ${eventId}`);
-  };
-
-  const renderEventItem = ({ item }) => {
+  const renderEventItem = ({ item }: { item: any }) => {
     const eventDate = new Date(item.date).toLocaleString('fr-FR', {
       dateStyle: 'short',
       timeStyle: 'short',
@@ -61,15 +41,19 @@ export default function MyEventsScreen() {
           {item.sport} - {item.location} ({item.city})
         </Text>
         <Text style={styles.eventDate}>Date : {eventDate}</Text>
-        <Text style={styles.eventParticipants}>
-          Participants : {item.participants}
-        </Text>
+        <Text style={styles.eventParticipants}>Participants : {item.participants}</Text>
 
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item.id)}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => Alert.alert('Modifier', `Modifier l'événement ID : ${item.id}`)}
+          >
             <Text style={styles.editButtonText}>Modifier</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item.id)}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => Alert.alert('Supprimer', `Supprimer l'événement ID : ${item.id}`)}
+          >
             <Text style={styles.deleteButtonText}>Supprimer</Text>
           </TouchableOpacity>
         </View>
@@ -89,7 +73,7 @@ export default function MyEventsScreen() {
     <View style={styles.container}>
       <FlatList
         data={events}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={renderEventItem}
         contentContainerStyle={styles.listContent}
       />
@@ -115,6 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 15,
     marginBottom: 15,
+    // Ombre iOS, élévation Android
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

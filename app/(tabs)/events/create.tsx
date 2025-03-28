@@ -3,48 +3,58 @@ import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } 
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventCreateSchema } from '@/app/validations/validation';
-import { fetchSports } from '@/app/services/supabaseService';
+import { fetchSports, getCities, createEvent, getUserId } from '@/app/services/supabaseService';
+import { useRouter } from 'expo-router';
 
 export default function CreateEventScreen() {
-  const [open, setOpen] = useState(false);
-  const [sport, setSport] = useState('');
-  const [items, setItems] = useState([]);
+  const router = useRouter();
+  const [sportOpen, setSportOpen] = useState(false);
+  const [sport, setSport] = useState(0);
+  const [sportItems, setSportItems] = useState([]);
+
+  const [cityOpen, setCityOpen] = useState(false);
+  const [city, setCity] = useState(0);
+  const [cityItems, setCityItems] = useState([]);
 
   const [location, setLocation] = useState('');
-  const [city, setCity] = useState('');
   const [participants, setParticipants] = useState('');
-
   const [date, setDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
-    const loadSports = async () => {
+    const loadData = async () => {
       try {
         const sports = await fetchSports();
-        const dropdownItems = sports.map((sport) => ({
-          label: sport.name,
-          value: sport.id,
-        }));
-        setItems(dropdownItems);
+        setSportItems(sports.map((s: any) => ({ label: s.name, value: s.id })));
+
+        const cities = await getCities();
+        setCityItems(cities.map((c: any) => ({ label: c.name, value: c.id })));
       } catch (err) {
-        Alert.alert('Erreur', 'Impossible de charger les sports.');
+        Alert.alert('Erreur', 'Impossible de charger les données.');
       }
     };
-    loadSports();
+    loadData();
   }, []);
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (!date) {
       Alert.alert('Erreur', "Veuillez sélectionner une date.");
       return;
     }
 
+    const user_id = await getUserId();
+
+    if (!user_id) {
+      console.error('UserId not found');
+      return;
+    }
+
     const formData = {
-      sport,
       location,
-      city,
       date,
       participants,
+      sport,
+      city,
     };
 
     const validationResult = eventCreateSchema.safeParse(formData);
@@ -57,18 +67,28 @@ export default function CreateEventScreen() {
     const { date: finalDate, participants: parsedParticipants } = validationResult.data;
     const displayDate = finalDate.toLocaleDateString('fr-FR');
 
-    Alert.alert(
-      'Succès',
-      `Événement créé !
-      Sport = ${sport}
-      Lieu = ${location}
-      Ville = ${city}
-      Date = ${displayDate}
-      Participants = ${parsedParticipants}`
-    );
+    try {
+      const payload = {
+        sport,
+        location,
+        city,
+        date: finalDate.toISOString(),
+        participants: parsedParticipants,
+        user_id,
+      };
+
+      const result = await createEvent(payload);
+      Alert.alert(
+        'Succès',
+        'Événement créé !'
+      );
+      router.push('/events/myevents');
+    } catch (error: any) {
+      Alert.alert("Erreur", error.message);
+    }
   };
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setDate(selectedDate);
@@ -81,16 +101,34 @@ export default function CreateEventScreen() {
 
       <Text style={styles.label}>Sport</Text>
       <DropDownPicker
-        open={open}
+        open={sportOpen}
         value={sport}
-        items={items}
-        setOpen={setOpen}
+        items={sportItems}
+        setOpen={setSportOpen}
         setValue={setSport}
-        setItems={setItems}
+        setItems={setSportItems}
         placeholder="Sélectionnez un sport"
         containerStyle={styles.dropdownContainer}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownBox}
+        zIndex={3000}
+        zIndexInverse={1000}
+      />
+
+      <Text style={styles.label}>Ville</Text>
+      <DropDownPicker
+        open={cityOpen}
+        value={city}
+        items={cityItems}
+        setOpen={setCityOpen}
+        setValue={setCity}
+        setItems={setCityItems}
+        placeholder="Sélectionnez une ville"
+        containerStyle={styles.dropdownContainer}
+        style={styles.dropdown}
+        dropDownContainerStyle={styles.dropdownBox}
+        zIndex={2000}
+        zIndexInverse={2000}
       />
 
       <Text style={styles.label}>Localisation</Text>
@@ -101,16 +139,7 @@ export default function CreateEventScreen() {
         onChangeText={setLocation}
       />
 
-      <Text style={styles.label}>Ville</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Entrez la ville"
-        value={city}
-        onChangeText={setCity}
-      />
-
       <Text style={styles.label}>Date</Text>
-
       <TouchableOpacity
         style={[styles.input, styles.dateButton]}
         onPress={() => setShowDatePicker(true)}
@@ -126,6 +155,7 @@ export default function CreateEventScreen() {
           mode="date"
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleDateChange}
+          minimumDate={new Date()}
           locale="fr-FR"
         />
       )}
@@ -179,9 +209,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     justifyContent: 'center',
   },
-  dateButton: {
-    // additional styling if you want to differentiate date field
-  },
+  dateButton: {},
   dateButtonText: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
