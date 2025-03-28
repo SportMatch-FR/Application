@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 
 export async function fetchSports() {
   const { data, error } = await supabase.functions.invoke('getSports', {
-    body: { name: 'Functions' },
-  })
+    body: { name: 'Functions' }
+  });
 
   if (error) {
     console.error('fetchSports error:', error);
@@ -15,8 +15,8 @@ export async function fetchSports() {
 
 export async function getCities() {
   const { data, error } = await supabase.functions.invoke('getCity', {
-    body: { name: 'Functions' },
-  })
+    body: { name: 'Functions' }
+  });
 
   if (error) {
     console.error('getCities error:', error);
@@ -43,7 +43,7 @@ export async function fetchUser() {
 
 export async function getUserId() {
   const {
-    data: { session },
+    data: { session }
   } = await supabase.auth.getSession();
   const user_id = session?.user?.id;
   if (!user_id) {
@@ -65,7 +65,7 @@ export async function createEvent(eventData: {
 
 
   const { data, error } = await supabase.functions.invoke('createEvent', {
-    body: eventData,
+    body: eventData
   });
 
   if (error) {
@@ -79,7 +79,7 @@ export async function getUserEvents() {
   try {
     const user_id = await getUserId();
     const { data, error } = await supabase.functions.invoke('myEvent', {
-      body: { user_id },
+      body: { user_id }
     });
 
     if (error) {
@@ -95,7 +95,7 @@ export async function getUserEvents() {
 
 export async function deleteEvent(event_id: string) {
   const { data, error } = await supabase.functions.invoke('deleteEvent', {
-    body: { event_id },
+    body: { event_id }
   });
 
   if (error) {
@@ -107,7 +107,7 @@ export async function deleteEvent(event_id: string) {
 
 export async function fetchEventDetails(event_id: string) {
   const { data, error } = await supabase.functions.invoke('getDetailsEvent', {
-    body: { event_id },
+    body: { event_id }
   });
 
   if (error) {
@@ -127,7 +127,7 @@ export async function updateEvent(eventData: {
   user_id: string; // UUID of the Supabase user
 }) {
   const { data, error } = await supabase.functions.invoke('updateEvent', {
-    body: eventData,
+    body: eventData
   });
 
   if (error) {

@@ -1,7 +1,16 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { UserPlus, Eye, EyeOff } from 'lucide-react-native';
+import { Eye, EyeOff, UserPlus } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
 import { registerSchema } from '@/app/validations/validation';
 
@@ -22,11 +31,11 @@ export default function RegisterScreen() {
       lastName,
       email,
       password,
-      confirmPassword,
+      confirmPassword
     });
     if (!validationResult.success) {
-      const errorMessages = validationResult.error.errors.map(err => err.message).join("\n");
-      Alert.alert("Erreur de validation", errorMessages);
+      const errorMessages = validationResult.error.errors.map(err => err.message).join('\n');
+      Alert.alert('Erreur de validation', errorMessages);
       return;
     }
 
@@ -35,12 +44,12 @@ export default function RegisterScreen() {
       email,
       password,
       options: {
-        data: { first_name: firstName, last_name: lastName, role: 'default' },
-      },
+        data: { first_name: firstName, last_name: lastName, role: 'default' }
+      }
     });
     setIsLoading(false);
     if (error) {
-      Alert.alert("Erreur", error.message);
+      Alert.alert('Erreur', error.message);
     } else {
       router.replace('/');
     }
@@ -85,9 +94,9 @@ export default function RegisterScreen() {
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
             {showPassword ? (
-              <EyeOff size={20} color="#666" />
+              <EyeOff size={20} color='#666' />
             ) : (
-              <Eye size={20} color="#666" />
+              <Eye size={20} color='#666' />
             )}
           </TouchableOpacity>
         </View>
@@ -101,16 +110,16 @@ export default function RegisterScreen() {
           />
           <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton}>
             {showConfirmPassword ? (
-              <EyeOff size={20} color="#666" />
+              <EyeOff size={20} color='#666' />
             ) : (
-              <Eye size={20} color="#666" />
+              <Eye size={20} color='#666' />
             )}
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleRegister} disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color='#fff' />
           ) : (
             <Text style={styles.buttonText}>S'inscrire</Text>
           )}
@@ -129,29 +138,29 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   content: {
-    padding: 20,
+    padding: 20
   },
   header: {
     alignItems: 'center',
     marginTop: 80,
-    marginBottom: 50,
+    marginBottom: 50
   },
   title: {
     fontFamily: 'Inter-Bold',
     fontSize: 32,
-    marginTop: 20,
+    marginTop: 20
   },
   subtitle: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     color: '#666',
-    marginTop: 10,
+    marginTop: 10
   },
   form: {
-    gap: 15,
+    gap: 15
   },
   input: {
     height: 50,
@@ -160,7 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Regular'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -169,10 +178,10 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 15,
-    height: 50,
+    height: 50
   },
   eyeButton: {
-    marginLeft: 10,
+    marginLeft: 10
   },
   button: {
     height: 50,
@@ -180,21 +189,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 10
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Inter-SemiBold'
   },
   linkButton: {
     height: 50,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   linkText: {
     color: '#007AFF',
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
-  },
+    fontFamily: 'Inter-Regular'
+  }
 });

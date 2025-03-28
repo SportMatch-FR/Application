@@ -1,7 +1,16 @@
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { LogIn, Eye, EyeOff } from 'lucide-react-native';
+import { Eye, EyeOff, LogIn } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
 import { loginSchema } from '@/app/validations/validation';
 
@@ -15,19 +24,19 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     const validationResult = loginSchema.safeParse({ email, password });
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => err.message).join("\n");
-      Alert.alert("Erreur de validation", errors);
+      const errors = validationResult.error.errors.map(err => err.message).join('\n');
+      Alert.alert('Erreur de validation', errors);
       return;
     }
 
     setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     });
     setIsLoading(false);
     if (error) {
-      Alert.alert("Erreur", error.message);
+      Alert.alert('Erreur', error.message);
     } else {
       router.replace('/');
     }
@@ -60,16 +69,16 @@ export default function LoginScreen() {
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
             {showPassword ? (
-              <EyeOff size={20} color="#666" />
+              <EyeOff size={20} color='#666' />
             ) : (
-              <Eye size={20} color="#666" />
+              <Eye size={20} color='#666' />
             )}
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={isLoading}>
           {isLoading ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color='#fff' />
           ) : (
             <Text style={styles.buttonText}>Se connecter</Text>
           )}
@@ -89,29 +98,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 20
   },
   content: {
-    padding: 20,
+    padding: 20
   },
   header: {
     alignItems: 'center',
     marginTop: 100,
-    marginBottom: 50,
+    marginBottom: 50
   },
   title: {
     fontFamily: 'Inter-Bold',
     fontSize: 32,
-    marginTop: 20,
+    marginTop: 20
   },
   subtitle: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     color: '#666',
-    marginTop: 10,
+    marginTop: 10
   },
   form: {
-    gap: 15,
+    gap: 15
   },
   input: {
     height: 50,
@@ -120,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Regular'
   },
   inputContainer: {
     flexDirection: 'row',
@@ -129,10 +138,10 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 15,
-    height: 50,
+    height: 50
   },
   eyeButton: {
-    marginLeft: 10,
+    marginLeft: 10
   },
   button: {
     height: 50,
@@ -140,21 +149,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 10
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Inter-SemiBold'
   },
   linkButton: {
     height: 50,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   linkText: {
     color: '#007AFF',
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
-  },
+    fontFamily: 'Inter-Regular'
+  }
 });

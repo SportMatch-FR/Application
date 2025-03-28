@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
+import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventCreateSchema } from '@/app/validations/validation';
-import { fetchSports, getCities, createEvent, getUserId } from '@/app/services/supabaseService';
+import { createEvent, fetchSports, getCities, getUserId } from '@/app/services/supabaseService';
 import { useRouter } from 'expo-router';
 
 export default function CreateEventScreen() {
@@ -38,7 +38,7 @@ export default function CreateEventScreen() {
 
   const handleCreateEvent = async () => {
     if (!date) {
-      Alert.alert('Erreur', "Veuillez sélectionner une date.");
+      Alert.alert('Erreur', 'Veuillez sélectionner une date.');
       return;
     }
 
@@ -54,13 +54,13 @@ export default function CreateEventScreen() {
       date,
       participants,
       sport,
-      city,
+      city
     };
 
     const validationResult = eventCreateSchema.safeParse(formData);
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => err.message).join("\n");
-      Alert.alert("Erreur de validation", errors);
+      const errors = validationResult.error.errors.map(err => err.message).join('\n');
+      Alert.alert('Erreur de validation', errors);
       return;
     }
 
@@ -74,7 +74,7 @@ export default function CreateEventScreen() {
         city,
         date: finalDate.toISOString(),
         participants: parsedParticipants,
-        user_id,
+        user_id
       };
 
       const result = await createEvent(payload);
@@ -84,7 +84,7 @@ export default function CreateEventScreen() {
       );
       router.push('/events/myevents');
     } catch (error: any) {
-      Alert.alert("Erreur", error.message);
+      Alert.alert('Erreur', error.message);
     }
   };
 
@@ -107,7 +107,7 @@ export default function CreateEventScreen() {
         setOpen={setSportOpen}
         setValue={setSport}
         setItems={setSportItems}
-        placeholder="Sélectionnez un sport"
+        placeholder='Sélectionnez un sport'
         containerStyle={styles.dropdownContainer}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownBox}
@@ -123,7 +123,7 @@ export default function CreateEventScreen() {
         setOpen={setCityOpen}
         setValue={setCity}
         setItems={setCityItems}
-        placeholder="Sélectionnez une ville"
+        placeholder='Sélectionnez une ville'
         containerStyle={styles.dropdownContainer}
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownBox}
@@ -134,7 +134,7 @@ export default function CreateEventScreen() {
       <Text style={styles.label}>Localisation</Text>
       <TextInput
         style={styles.input}
-        placeholder="Entrez le lieu"
+        placeholder='Entrez le lieu'
         value={location}
         onChangeText={setLocation}
       />
@@ -152,21 +152,21 @@ export default function CreateEventScreen() {
       {showDatePicker && (
         <DateTimePicker
           value={date || new Date()}
-          mode="date"
+          mode='date'
           display={Platform.OS === 'ios' ? 'spinner' : 'default'}
           onChange={handleDateChange}
           minimumDate={new Date()}
-          locale="fr-FR"
+          locale='fr-FR'
         />
       )}
 
       <Text style={styles.label}>Participants</Text>
       <TextInput
         style={styles.input}
-        placeholder="Entrez le nombre de participants"
+        placeholder='Entrez le nombre de participants'
         value={participants}
         onChangeText={setParticipants}
-        keyboardType="numeric"
+        keyboardType='numeric'
       />
 
       <TouchableOpacity style={styles.createButton} onPress={handleCreateEvent}>
@@ -182,21 +182,21 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Bold',
     fontSize: 24,
     marginBottom: 20,
-    color: '#007AFF',
+    color: '#007AFF'
   },
   label: {
     fontFamily: 'Inter-SemiBold',
     fontSize: 16,
     color: '#333',
-    marginBottom: 8,
+    marginBottom: 8
   },
   dropdownContainer: { marginBottom: 15 },
   dropdown: {
     borderColor: '#ddd',
-    borderRadius: 8,
+    borderRadius: 8
   },
   dropdownBox: {
-    borderColor: '#ddd',
+    borderColor: '#ddd'
   },
   input: {
     height: 50,
@@ -207,24 +207,24 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     fontSize: 16,
     marginBottom: 15,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   dateButton: {},
   dateButtonText: {
     fontFamily: 'Inter-Regular',
     fontSize: 16,
-    color: '#666',
+    color: '#666'
   },
   createButton: {
     height: 50,
     backgroundColor: '#007AFF',
     borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   createButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 });

@@ -103,7 +103,7 @@ export default function ChatConversationScreen() {
     },
     {
       id: '13',
-      text: "Parfait, à tout à l'heure.",
+      text: 'Parfait, à tout à l\'heure.',
       sender: 'other',
       senderName: 'Alice Martin',
       timestamp: '2025-03-27T12:42:00'
@@ -129,7 +129,7 @@ export default function ChatConversationScreen() {
     const date = new Date(timestamp);
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
-    const dateLabel = isToday ? "Aujourd'hui" : date.toLocaleDateString('fr-FR');
+    const dateLabel = isToday ? 'Aujourd\'hui' : date.toLocaleDateString('fr-FR');
     const timeLabel = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     return `${dateLabel}, ${timeLabel}`;
   };
@@ -256,17 +256,17 @@ const styles = StyleSheet.create({
   messageBubble: {
     maxWidth: '80%',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 8
   },
   selfMessage: {
     backgroundColor: '#007AFF',
     alignSelf: 'flex-end',
-    borderTopRightRadius: 0,
+    borderTopRightRadius: 0
   },
   otherMessage: {
     backgroundColor: '#f0f0f0',
     alignSelf: 'flex-start',
-    borderTopLeftRadius: 0,
+    borderTopLeftRadius: 0
   },
   messageTextSelf: {
     fontSize: 16,
