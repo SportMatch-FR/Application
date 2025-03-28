@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { getUserId, getUserEvents, deleteEvent } from '@/app/services/supabaseService';
+import { useRouter } from 'expo-router';
 
 export default function MyEventsScreen() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
 
@@ -68,7 +70,7 @@ export default function MyEventsScreen() {
         <View style={styles.buttonRow}>
           <TouchableOpacity
             style={styles.editButton}
-            onPress={() => Alert.alert('Modifier', `Modifier l'événement ID : ${item.id}`)}
+            onPress={() => router.push(`/events/${item.id}`)}
           >
             <Text style={styles.editButtonText}>Modifier</Text>
           </TouchableOpacity>

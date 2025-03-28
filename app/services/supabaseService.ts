@@ -88,3 +88,35 @@ export async function deleteEvent(event_id: string) {
   }
   return data;
 }
+
+export async function fetchEventDetails(event_id: string) {
+  const { data, error } = await supabase.functions.invoke('getDetailsEvent', {
+    body: { event_id },
+  });
+
+  if (error) {
+    console.error('fetchEventDetails error:', error);
+    throw error;
+  }
+  return data;
+}
+
+export async function updateEvent(eventData: {
+  event_id: string;
+  location: string;
+  date: string; // ISO string
+  participants: number;
+  sport: number;
+  city: number;
+  user_id: string; // UUID of the Supabase user
+}) {
+  const { data, error } = await supabase.functions.invoke('updateEvent', {
+    body: eventData,
+  });
+
+  if (error) {
+    console.error('updateEvent error:', error);
+    throw error;
+  }
+  return data;
+}
