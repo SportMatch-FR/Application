@@ -44,6 +44,11 @@ export default function CreateEventScreen() {
 
     const user_id = await getUserId();
 
+    if (!user_id) {
+      console.error('UserId not found');
+      return;
+    }
+
     const formData = {
       location,
       date,
