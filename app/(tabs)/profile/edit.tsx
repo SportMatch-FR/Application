@@ -43,7 +43,7 @@ export default function EditProfileScreen() {
       Alert.alert("Erreur", error.message);
     } else {
       Alert.alert("Succès", "Profil mis à jour avec succès !");
-      router.replace('/profile');
+      router.back();
     }
   };
 
