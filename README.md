@@ -20,38 +20,33 @@
    cd Application
    ```
 
-2. **Install dependencies:**
+   2. **Install dependencies:**
 
-   If you're using **pnpm**:
-   ```bash
-   pnpm install
-   ```
-   Otherwise, with **npm**:
-   ```bash
-   npm install
-   ```
-
-3. **Configure Supabase:**
-
-    - Rename the file `supabaseClient.js.exemple` to `supabaseClient.ts` at the project root.
-    - Add your Supabase URL and anon key:
-
-      ```js
-      import AsyncStorage from '@react-native-async-storage/async-storage';
-      import { createClient } from '@supabase/supabase-js';
-      
-      const supabaseUrl = 'https://YOUR-SUPABASE-URL.supabase.co';
-      const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
-      
-      export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          storage: AsyncStorage, 
-          storageKey: 'supabase.auth.token',
-        },
-      });
+      If you're using **pnpm**:
+      ```bash
+      pnpm install
       ```
+      Otherwise, with **npm**:
+      ```bash
+      npm install
+      ```
+
+      3. **Configure Supabase:**
+
+          - Rename the file `.env.exemple` to `.env` at the project root.
+          - Add your Supabase URL and anon key:
+
+            ```bash
+            EXPO_PUBLIC_SUPABASE_URL="https://yourproject.supabase.co"
+            EXPO_PUBLIC_SUPABASE_ANON_KEY="your_anon_key"
+            ```
+          - Execute command:
+
+            ```bash
+             supabase secrets set PROJECT_SUPABASE_URL="https://yourproject.supabase.co"
+             supabase secrets set PROJECT_SUPABASE_ANON_KEY="your_anon_key"
+            ```
+    
       
 ## Running the App
 

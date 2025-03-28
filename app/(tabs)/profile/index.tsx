@@ -56,6 +56,10 @@ export default function ProfileScreen() {
         <Text style={styles.email}>{email}</Text>
         <Text style={styles.info}>Sports favoris : Football, Tennis</Text>
 
+        <TouchableOpacity style={styles.eventsButton} onPress={() => router.push('/events/myevents') }>
+          <Text style={styles.eventsButtonText}>Mes événements</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.editButton} onPress={() => router.push('/profile/edit')}>
           <Text style={styles.editButtonText}>Modifier le profil</Text>
         </TouchableOpacity>
@@ -114,13 +118,25 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   editButton: {
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,
   },
   editButtonText: {
+    fontFamily: 'Inter-SemiBold',
+    color: '#fff',
+    fontSize: 16,
+  },
+  eventsButton: {
+    marginTop: 20,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  eventsButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
     fontSize: 16,
