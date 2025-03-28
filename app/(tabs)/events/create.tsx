@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } 
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventCreateSchema } from '@/app/validations/validation';
-import { fetchSports, getCities } from '@/app/services/supabaseService';
+import { fetchSports, getCities, createEvent, getUserId } from '@/app/services/supabaseService';
 
 export default function CreateEventScreen() {
   const [sportOpen, setSportOpen] = useState(false);
@@ -23,13 +23,10 @@ export default function CreateEventScreen() {
     const loadData = async () => {
       try {
         const sports = await fetchSports();
-        setSportItems(sports.map((s) => ({ label: s.name, value: s.id })));
+        setSportItems(sports.map((s: any) => ({ label: s.name, value: s.id })));
 
         const cities = await getCities();
-        console.log('RAW cities:', cities);
-
-        setCityItems(cities.map((c) => ({ label: c.name, value: c.id })));
-
+        setCityItems(cities.map((c: any) => ({ label: c.name, value: c.id })));
       } catch (err) {
         Alert.alert('Erreur', 'Impossible de charger les données.');
       }
@@ -37,17 +34,22 @@ export default function CreateEventScreen() {
     loadData();
   }, []);
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = async () => {
     if (!date) {
       Alert.alert('Erreur', "Veuillez sélectionner une date.");
       return;
     }
 
-    console.log('Selected city id:', city);
-    console.log('Selected sport id:', sport);
+    const user_id = await getUserId();
 
+    const formData = {
+      location,
+      date,
+      participants,
+      sport,
+      city,
+    };
 
-    const formData = { sport, location, city, date, participants };
     const validationResult = eventCreateSchema.safeParse(formData);
     if (!validationResult.success) {
       const errors = validationResult.error.errors.map(err => err.message).join("\n");
@@ -58,18 +60,27 @@ export default function CreateEventScreen() {
     const { date: finalDate, participants: parsedParticipants } = validationResult.data;
     const displayDate = finalDate.toLocaleDateString('fr-FR');
 
-    Alert.alert(
-      'Succès',
-      `Événement créé !
-      Sport = ${sport}
-      Lieu = ${location}
-      Ville = ${city}
-      Date = ${displayDate}
-      Participants = ${parsedParticipants}`
-    );
+    try {
+      const payload = {
+        sport,
+        location,
+        city,
+        date: finalDate.toISOString(),
+        participants: parsedParticipants,
+        user_id,
+      };
+
+      const result = await createEvent(payload);
+      Alert.alert(
+        'Succès',
+        'Événement créé !'
+      );
+    } catch (error: any) {
+      Alert.alert("Erreur", error.message);
+    }
   };
 
-  const handleDateChange = (event, selectedDate) => {
+  const handleDateChange = (event: any, selectedDate: Date | undefined) => {
     setShowDatePicker(false);
     if (selectedDate) {
       setDate(selectedDate);
@@ -140,7 +151,6 @@ export default function CreateEventScreen() {
           locale="fr-FR"
         />
       )}
-
 
       <Text style={styles.label}>Participants</Text>
       <TextInput
