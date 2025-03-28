@@ -25,6 +25,22 @@ export async function getCities() {
   return data;
 }
 
+export async function fetchUser() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) {
+    console.error('fetchUsers error:', error);
+    throw error;
+  }
+
+  if (!session) {
+    console.error('User not logged in');
+    return;
+  }
+
+  return session.user;
+}
+
 export async function getUserId() {
   const {
     data: { session },

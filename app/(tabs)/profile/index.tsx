@@ -1,28 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator, Alert } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import type { User } from '@supabase/supabase-js';
+import { fetchUser } from '@/app/services/supabaseService';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error('Error fetching session:', error);
-      } else if (session) {
-        setUser(session.user);
-      }
+  const loadUser = useCallback(async () => {
+    try {
+      setLoading(true);
+      const user = await fetchUser();
+      setUser(user);
+    } catch (error) {
+      console.error('Error fetching session:', error);
+    } finally {
       setLoading(false);
-    };
-
-    fetchUser();
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadUser();
+    }, [loadUser])
+  );
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
