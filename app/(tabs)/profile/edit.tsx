@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import { editProfileSchema } from '@/app/validations/validation';
@@ -15,7 +24,7 @@ export default function EditProfileScreen() {
     const fetchUser = async () => {
       const { data: { session }, error } = await supabase.auth.getSession();
       if (error) {
-        console.error("Erreur lors de la récupération de la session :", error);
+        console.error('Erreur lors de la récupération de la session :', error);
       } else if (session) {
         const metadata = session.user.user_metadata || {};
         setFirstName(metadata.first_name || '');
@@ -30,27 +39,27 @@ export default function EditProfileScreen() {
   const handleUpdateProfile = async () => {
     const validationResult = editProfileSchema.safeParse({ firstName, lastName });
     if (!validationResult.success) {
-      const errors = validationResult.error.errors.map(err => err.message).join("\n");
-      Alert.alert("Erreur de validation", errors);
+      const errors = validationResult.error.errors.map(err => err.message).join('\n');
+      Alert.alert('Erreur de validation', errors);
       return;
     }
     setUpdating(true);
     const { data, error } = await supabase.auth.updateUser({
-      data: { first_name: firstName, last_name: lastName },
+      data: { first_name: firstName, last_name: lastName }
     });
     setUpdating(false);
     if (error) {
-      Alert.alert("Erreur", error.message);
+      Alert.alert('Erreur', error.message);
     } else {
-      Alert.alert("Succès", "Profil mis à jour avec succès !");
-      router.replace('/profile');
+      Alert.alert('Succès', 'Profil mis à jour avec succès !');
+      router.back();
     }
   };
 
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size='large' color='#007AFF' />
       </View>
     );
   }
@@ -73,7 +82,7 @@ export default function EditProfileScreen() {
 
         <TouchableOpacity style={styles.button} onPress={handleUpdateProfile} disabled={updating}>
           {updating ? (
-            <ActivityIndicator color="#fff" />
+            <ActivityIndicator color='#fff' />
           ) : (
             <Text style={styles.buttonText}>Sauvegarder</Text>
           )}
@@ -86,13 +95,13 @@ export default function EditProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   content: {
-    padding: 20,
+    padding: 20
   },
   form: {
-    gap: 15,
+    gap: 15
   },
   input: {
     height: 50,
@@ -101,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Regular'
   },
   button: {
     height: 50,
@@ -109,16 +118,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 10
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontFamily: 'Inter-SemiBold',
+    fontFamily: 'Inter-SemiBold'
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 });

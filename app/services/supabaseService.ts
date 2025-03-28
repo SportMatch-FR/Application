@@ -3,8 +3,8 @@ import { Alert } from 'react-native';
 
 export async function fetchSports() {
   const { data, error } = await supabase.functions.invoke('getSports', {
-    body: { name: 'Functions' },
-  })
+    body: { name: 'Functions' }
+  });
 
   if (error) {
     console.error('fetchSports error:', error);
@@ -15,8 +15,8 @@ export async function fetchSports() {
 
 export async function getCities() {
   const { data, error } = await supabase.functions.invoke('getCity', {
-    body: { name: 'Functions' },
-  })
+    body: { name: 'Functions' }
+  });
 
   if (error) {
     console.error('getCities error:', error);
@@ -25,9 +25,25 @@ export async function getCities() {
   return data;
 }
 
+export async function fetchUser() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+
+  if (error) {
+    console.error('fetchUsers error:', error);
+    throw error;
+  }
+
+  if (!session) {
+    console.error('User not logged in');
+    return;
+  }
+
+  return session.user;
+}
+
 export async function getUserId() {
   const {
-    data: { session },
+    data: { session }
   } = await supabase.auth.getSession();
   const user_id = session?.user?.id;
   if (!user_id) {
@@ -49,7 +65,7 @@ export async function createEvent(eventData: {
 
 
   const { data, error } = await supabase.functions.invoke('createEvent', {
-    body: eventData,
+    body: eventData
   });
 
   if (error) {
@@ -63,7 +79,7 @@ export async function getUserEvents() {
   try {
     const user_id = await getUserId();
     const { data, error } = await supabase.functions.invoke('myEvent', {
-      body: { user_id },
+      body: { user_id }
     });
 
     if (error) {
@@ -75,4 +91,48 @@ export async function getUserEvents() {
     Alert.alert('Erreur', err.message);
     throw err;
   }
+}
+
+export async function deleteEvent(event_id: string) {
+  const { data, error } = await supabase.functions.invoke('deleteEvent', {
+    body: { event_id }
+  });
+
+  if (error) {
+    console.error('deleteEvent error:', error);
+    throw error;
+  }
+  return data;
+}
+
+export async function fetchEventDetails(event_id: string) {
+  const { data, error } = await supabase.functions.invoke('getDetailsEvent', {
+    body: { event_id }
+  });
+
+  if (error) {
+    console.error('fetchEventDetails error:', error);
+    throw error;
+  }
+  return data;
+}
+
+export async function updateEvent(eventData: {
+  event_id: string;
+  location: string;
+  date: string; // ISO string
+  participants: number;
+  sport: number;
+  city: number;
+  user_id: string; // UUID of the Supabase user
+}) {
+  const { data, error } = await supabase.functions.invoke('updateEvent', {
+    body: eventData
+  });
+
+  if (error) {
+    console.error('updateEvent error:', error);
+    throw error;
+  }
+  return data;
 }

@@ -1,9 +1,9 @@
 import type { Session } from '@supabase/supabase-js';
-import { useRouter, Slot, useSegments } from 'expo-router';
+import { Slot, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { useEffect, useRef, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { supabase } from '@/supabaseClient';
 
 export default function RootLayout() {
@@ -36,7 +36,7 @@ export default function RootLayout() {
   useEffect(() => {
     const fetchSession = async () => {
       const {
-        data: { session },
+        data: { session }
       } = await supabase.auth.getSession();
       setSession(session);
       setLoading(false);
@@ -48,7 +48,7 @@ export default function RootLayout() {
     fetchSession();
 
     const {
-      data: { subscription },
+      data: { subscription }
     } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       if (!session && !segments.includes('(auth)')) {
@@ -62,14 +62,14 @@ export default function RootLayout() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size='large' color='#007AFF' />
       </View>
     );
   }
 
   return (
     <>
-      <StatusBar style="auto" />
+      <StatusBar style='auto' />
       <Slot />
     </>
   );

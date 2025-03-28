@@ -32,21 +32,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    padding: 20,
+    padding: 20
   },
   item: {
     paddingVertical: 15,
     borderBottomWidth: 1,
-    borderColor: '#eee',
+    borderColor: '#eee'
   },
   title: {
     fontSize: 18,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Bold'
   },
   participants: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
     color: '#666',
-    marginTop: 5,
-  },
+    marginTop: 5
+  }
 });

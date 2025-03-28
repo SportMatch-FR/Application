@@ -3,11 +3,13 @@ import { Alert, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } 
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventCreateSchema } from '@/app/validations/validation';
-import { createEvent, fetchSports, getCities, getUserId } from '@/app/services/supabaseService';
-import { useRouter } from 'expo-router';
+import { fetchEventDetails, fetchSports, getCities, getUserId, updateEvent } from '@/app/services/supabaseService';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 
-export default function CreateEventScreen() {
+export default function EventModifyScreen() {
   const router = useRouter();
+  const { eventId } = useLocalSearchParams();
+
   const [sportOpen, setSportOpen] = useState(false);
   const [sport, setSport] = useState(0);
   const [sportItems, setSportItems] = useState([]);
@@ -29,14 +31,24 @@ export default function CreateEventScreen() {
 
         const cities = await getCities();
         setCityItems(cities.map((c: any) => ({ label: c.name, value: c.id })));
+
+        if (eventId) {
+          const eventDetails = await fetchEventDetails(eventId as string);
+
+          setSport(eventDetails.sport_id);
+          setCity(eventDetails.city_id);
+          setLocation(eventDetails.location);
+          setParticipants(eventDetails.participants.toString());
+          setDate(new Date(eventDetails.date));
+        }
       } catch (err) {
         Alert.alert('Erreur', 'Impossible de charger les données.');
       }
     };
     loadData();
-  }, []);
+  }, [eventId]);
 
-  const handleCreateEvent = async () => {
+  const handleUpdateEvent = async () => {
     if (!date) {
       Alert.alert('Erreur', 'Veuillez sélectionner une date.');
       return;
@@ -69,6 +81,7 @@ export default function CreateEventScreen() {
 
     try {
       const payload = {
+        event_id: eventId as string,
         sport,
         location,
         city,
@@ -77,12 +90,12 @@ export default function CreateEventScreen() {
         user_id
       };
 
-      const result = await createEvent(payload);
+      const result = await updateEvent(payload);
       Alert.alert(
         'Succès',
-        'Événement créé !'
+        'Événement modifié !'
       );
-      router.push('/events/myevents');
+      router.back();
     } catch (error: any) {
       Alert.alert('Erreur', error.message);
     }
@@ -97,7 +110,7 @@ export default function CreateEventScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Création d'un événement</Text>
+      <Text style={styles.header}>Modification d'un événement</Text>
 
       <Text style={styles.label}>Sport</Text>
       <DropDownPicker
@@ -169,8 +182,8 @@ export default function CreateEventScreen() {
         keyboardType='numeric'
       />
 
-      <TouchableOpacity style={styles.createButton} onPress={handleCreateEvent}>
-        <Text style={styles.createButtonText}>Créer</Text>
+      <TouchableOpacity style={styles.updateButton} onPress={handleUpdateEvent}>
+        <Text style={styles.updateButtonText}>Modifier</Text>
       </TouchableOpacity>
     </View>
   );
@@ -215,14 +228,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666'
   },
-  createButton: {
+  updateButton: {
     height: 50,
     backgroundColor: '#007AFF',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center'
   },
-  createButtonText: {
+  updateButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
     fontSize: 16
