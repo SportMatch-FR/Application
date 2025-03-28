@@ -167,7 +167,7 @@ export async function getUserCity() {
   const { data: { session }, error } = await supabase.auth.getSession();
   const city_id = session?.user?.user_metadata?.city_id;
   if (!city_id || city_id === 0) {
-    return "Aucune";
+    return 'Aucune';
   }
 
   const { data, error: error2 } = await supabase.functions.invoke('getCityDetails', {

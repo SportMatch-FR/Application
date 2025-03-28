@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import { editProfileSchema } from '@/app/validations/validation';
@@ -132,7 +123,7 @@ const styles = StyleSheet.create({
   dropdown: {
     borderColor: '#ddd',
     borderRadius: 8,
-    fontSize: 16,
+    fontSize: 16
   },
   dropdownBox: {
     borderColor: '#ddd'

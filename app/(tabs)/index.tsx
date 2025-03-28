@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Swiper from 'react-native-deck-swiper';
 import { Ionicons } from '@expo/vector-icons';
@@ -61,7 +61,7 @@ export default function DiscoverScreen() {
   if (loading) {
     return (
       <View style={[styles.container, styles.loaderContainer]}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size='large' color='#007AFF' />
       </View>
     );
   }
@@ -100,7 +100,7 @@ export default function DiscoverScreen() {
               onSwipedRight={onSwipedRight}
               onSwipedAll={onSwipedAll}
               cardIndex={0}
-              backgroundColor="#f5f5f5"
+              backgroundColor='#f5f5f5'
               stackSize={3}
               verticalSwipe={false}
             />
@@ -112,14 +112,14 @@ export default function DiscoverScreen() {
               style={[styles.iconButton, styles.dislikeButton]}
               onPress={() => swiperRef.current?.swipeLeft()}
             >
-              <Ionicons name="close" size={32} color="#fff" />
+              <Ionicons name='close' size={32} color='#fff' />
             </TouchableOpacity>
 
             <TouchableOpacity
               style={[styles.iconButton, styles.likeButton]}
               onPress={() => swiperRef.current?.swipeRight()}
             >
-              <Ionicons name="heart" size={32} color="#fff" />
+              <Ionicons name='heart' size={32} color='#fff' />
             </TouchableOpacity>
           </View>
         </>
@@ -131,32 +131,32 @@ export default function DiscoverScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f5'
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   header: {
     height: 120,
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   title: {
     fontSize: 34,
     fontFamily: 'Inter-Bold',
-    color: '#fff',
+    color: '#fff'
   },
   message: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    color: '#666',
+    color: '#666'
   },
   swiperContainer: {
     flex: 1,
-    padding: 20,
+    padding: 20
   },
   card: {
     flex: 0.75,
@@ -166,26 +166,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 20
   },
   cardTitle: {
     fontSize: 20,
     fontFamily: 'Inter-Bold',
-    marginBottom: 10,
+    marginBottom: 10
   },
   cardSubtitle: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    marginBottom: 10,
+    marginBottom: 10
   },
   cardDate: {
     fontSize: 14,
     fontFamily: 'Inter-Regular',
-    marginBottom: 5,
+    marginBottom: 5
   },
   cardParticipants: {
     fontSize: 14,
-    fontFamily: 'Inter-Regular',
+    fontFamily: 'Inter-Regular'
   },
   buttonRow: {
     position: 'absolute',
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    zIndex: 9999,
+    zIndex: 9999
   },
   iconButton: {
     width: 60,
@@ -201,22 +201,22 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: '#999',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   dislikeButton: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: '#FF3B30'
   },
   likeButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#007AFF'
   },
   noMoreContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   noMoreText: {
     fontSize: 18,
     fontFamily: 'Inter-Regular',
-    color: '#666',
-  },
+    color: '#666'
+  }
 });

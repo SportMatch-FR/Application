@@ -9,8 +9,8 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-import { Divide, Eye, EyeOff, UserPlus } from 'lucide-react-native';
+import { useRouter } from 'expo-router';
+import { Eye, EyeOff, UserPlus } from 'lucide-react-native';
 import { supabase } from '@/supabaseClient';
 import { registerSchema } from '@/app/validations/validation';
 

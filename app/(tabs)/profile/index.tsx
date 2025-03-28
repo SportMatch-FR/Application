@@ -1,12 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import type { User } from '@supabase/supabase-js';
@@ -110,17 +103,17 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'center'
   },
   profileContainer: {
     alignItems: 'center',
     marginTop: 20,
-    paddingHorizontal: 20,
+    paddingHorizontal: 20
   },
   profileImage: {
     width: 100,
@@ -128,58 +121,58 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 3,
     borderColor: '#007AFF',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f5f5f5'
   },
   name: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    marginTop: 10,
+    marginTop: 10
   },
   email: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#666',
-    marginTop: 5,
+    marginTop: 5
   },
   info: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    marginTop: 10,
+    marginTop: 10
   },
   eventsButton: {
     marginTop: 20,
     backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 8
   },
   eventsButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16,
+    fontSize: 16
   },
   editButton: {
     marginTop: 10,
     backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 8
   },
   editButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16,
+    fontSize: 16
   },
   logoutButton: {
     marginTop: 10,
     backgroundColor: '#FF3B30',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8,
+    borderRadius: 8
   },
   logoutButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16,
-  },
+    fontSize: 16
+  }
 });
