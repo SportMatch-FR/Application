@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, Platform } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { sportsListData } from '@/app/data/data';
 import { eventCreateSchema } from '@/app/validations/validation';
+import { fetchSports } from '@/app/services/supabaseService';
 
 export default function CreateEventScreen() {
-  const dropdownItems = sportsListData.map((sport) => ({
-    label: sport.name,
-    value: sport.id,
-  }));
-
   const [open, setOpen] = useState(false);
   const [sport, setSport] = useState('');
-  const [items, setItems] = useState(dropdownItems);
+  const [items, setItems] = useState([]);
 
   const [location, setLocation] = useState('');
   const [city, setCity] = useState('');
@@ -21,6 +16,22 @@ export default function CreateEventScreen() {
 
   const [date, setDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    const loadSports = async () => {
+      try {
+        const sports = await fetchSports();
+        const dropdownItems = sports.map((sport) => ({
+          label: sport.name,
+          value: sport.id,
+        }));
+        setItems(dropdownItems);
+      } catch (err) {
+        Alert.alert('Erreur', 'Impossible de charger les sports.');
+      }
+    };
+    loadSports();
+  }, []);
 
   const handleCreateEvent = () => {
     if (!date) {
