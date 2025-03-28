@@ -4,8 +4,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { eventCreateSchema } from '@/app/validations/validation';
 import { fetchSports, getCities, createEvent, getUserId } from '@/app/services/supabaseService';
+import { useRouter } from 'expo-router';
 
 export default function CreateEventScreen() {
+  const router = useRouter();
   const [sportOpen, setSportOpen] = useState(false);
   const [sport, setSport] = useState(0);
   const [sportItems, setSportItems] = useState([]);
@@ -75,6 +77,7 @@ export default function CreateEventScreen() {
         'Succès',
         'Événement créé !'
       );
+      router.push('/events/myevents');
     } catch (error: any) {
       Alert.alert("Erreur", error.message);
     }
