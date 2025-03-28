@@ -11,3 +11,15 @@ export async function fetchSports() {
   }
   return data;
 }
+
+export async function getCities() {
+  const { data, error } = await supabase.functions.invoke('getCity', {
+    body: { name: 'Functions' },
+  })
+
+  if (error) {
+    console.error('getCities error:', error);
+    throw error;
+  }
+  return data;
+}
