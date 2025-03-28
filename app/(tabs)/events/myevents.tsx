@@ -1,34 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { getUserId, getUserEvents, deleteEvent } from '@/app/services/supabaseService';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 export default function MyEventsScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState<any[]>([]);
-
-  useEffect(() => {
-    const loadEvents = async () => {
-      try {
-        const userId = await getUserId();
-        if (!userId) {
-          Alert.alert('Erreur', 'Utilisateur non authentifié.');
-          setLoading(false);
-          return;
-        }
-        const data = await getUserEvents();
-        setEvents(data);
-      } catch (error) {
-        Alert.alert('Erreur', 'Impossible de charger vos événements.');
-        console.error(error);
-      } finally {
-        setLoading(false);
+  
+  const loadEvents = useCallback(async () => {
+    try {
+      setLoading(true);
+      const userId = await getUserId();
+      if (!userId) {
+        Alert.alert('Erreur', 'Utilisateur non authentifié.');
+        return;
       }
-    };
-
-    loadEvents();
+      const data = await getUserEvents();
+      setEvents(data);
+    } catch (error) {
+      Alert.alert('Erreur', 'Impossible de charger vos événements.');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadEvents();
+    }, [loadEvents])
+  );
 
   const handleDeleteEvent = (event_id: string) => {
     Alert.alert(
