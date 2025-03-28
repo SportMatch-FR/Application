@@ -35,8 +35,6 @@ export default function MyEventsScreen() {
       timeStyle: 'short',
     });
 
-    console.log(item);
-
     return (
       <View style={styles.eventCard}>
         <Text style={styles.eventTitle}>

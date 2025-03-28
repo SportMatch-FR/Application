@@ -62,7 +62,6 @@ export async function createEvent(eventData: {
 export async function getUserEvents() {
   try {
     const user_id = await getUserId();
-    console.log('user_id:', user_id);
     const { data, error } = await supabase.functions.invoke('myEvent', {
       body: { user_id },
     });
