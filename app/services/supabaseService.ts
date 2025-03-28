@@ -149,3 +149,36 @@ export async function updateEvent(eventData: {
   }
   return data;
 }
+
+export async function updateUserCity(city_id: number) {
+  const { data, error } = await supabase.auth.updateUser({
+    data: { city_id: city_id }
+  });
+
+  if (error) {
+    console.error('updateUserCity error:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function getUserCity() {
+  const { data: { session }, error } = await supabase.auth.getSession();
+  const city_id = session?.user?.user_metadata?.city_id;
+  if (!city_id || city_id === 0) {
+    return "Aucune";
+  }
+
+  const { data, error: error2 } = await supabase.functions.invoke('getCityDetails', {
+    body: { city_id }
+  });
+
+  if (error2) {
+    console.error('getUserCity error:', error2);
+    throw error2;
+  }
+
+  return data.name;
+}
+

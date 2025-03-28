@@ -1,20 +1,29 @@
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import type { User } from '@supabase/supabase-js';
-import { fetchUser } from '@/app/services/supabaseService';
+import { fetchUser, getUserCity } from '@/app/services/supabaseService';
 
 export default function ProfileScreen() {
   const router = useRouter();
+
   const [user, setUser] = useState<User | null>(null);
+  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(true);
 
   const loadUser = useCallback(async () => {
     try {
       setLoading(true);
-      const user = await fetchUser();
-      setUser(user);
+      const u = await fetchUser();
+      setUser(u);
     } catch (error) {
       console.error('Error fetching session:', error);
     } finally {
@@ -22,10 +31,25 @@ export default function ProfileScreen() {
     }
   }, []);
 
+  const loadCity = useCallback(async () => {
+    try {
+      const c = await getUserCity();
+      setCity(c);
+    } catch (error) {
+      console.error('Error fetching city:', error);
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       loadUser();
     }, [loadUser])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      loadCity();
+    }, [loadCity])
   );
 
   const handleLogout = async () => {
@@ -58,13 +82,20 @@ export default function ProfileScreen() {
         />
         <Text style={styles.name}>{fullName}</Text>
         <Text style={styles.email}>{email}</Text>
+        <Text style={styles.info}>Ville : {city}</Text>
         <Text style={styles.info}>Sports favoris : Football, Tennis</Text>
 
-        <TouchableOpacity style={styles.eventsButton} onPress={() => router.push('/events/myevents')}>
+        <TouchableOpacity
+          style={styles.eventsButton}
+          onPress={() => router.push('/events/myevents')}
+        >
           <Text style={styles.eventsButtonText}>Mes événements</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.editButton} onPress={() => router.push('/profile/edit')}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => router.push('/profile/edit')}
+        >
           <Text style={styles.editButtonText}>Modifier le profil</Text>
         </TouchableOpacity>
 
@@ -79,23 +110,17 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   loaderContainer: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
-  },
-  header: {
-    height: 120,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingVertical: 10
+    alignItems: 'center',
   },
   profileContainer: {
     alignItems: 'center',
     marginTop: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   profileImage: {
     width: 100,
@@ -103,58 +128,58 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderWidth: 3,
     borderColor: '#007AFF',
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
   name: {
     fontSize: 24,
     fontFamily: 'Inter-Bold',
-    marginTop: 10
+    marginTop: 10,
   },
   email: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
     color: '#666',
-    marginTop: 5
+    marginTop: 5,
   },
   info: {
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    marginTop: 10
-  },
-  editButton: {
     marginTop: 10,
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8
-  },
-  editButtonText: {
-    fontFamily: 'Inter-SemiBold',
-    color: '#fff',
-    fontSize: 16
   },
   eventsButton: {
     marginTop: 20,
     backgroundColor: '#007AFF',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8
+    borderRadius: 8,
   },
   eventsButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16
+    fontSize: 16,
+  },
+  editButton: {
+    marginTop: 10,
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  editButtonText: {
+    fontFamily: 'Inter-SemiBold',
+    color: '#fff',
+    fontSize: 16,
   },
   logoutButton: {
     marginTop: 10,
     backgroundColor: '#FF3B30',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 8
+    borderRadius: 8,
   },
   logoutButtonText: {
     fontFamily: 'Inter-SemiBold',
     color: '#fff',
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

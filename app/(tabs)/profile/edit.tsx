@@ -12,6 +12,8 @@ import {
 import { useRouter } from 'expo-router';
 import { supabase } from '@/supabaseClient';
 import { editProfileSchema } from '@/app/validations/validation';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { getCities } from '@/app/services/supabaseService';
 
 export default function EditProfileScreen() {
   const router = useRouter();
@@ -19,6 +21,10 @@ export default function EditProfileScreen() {
   const [lastName, setLastName] = useState('');
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+
+  const [cityOpen, setCityOpen] = useState(false);
+  const [city, setCity] = useState(0);
+  const [cityItems, setCityItems] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -33,7 +39,13 @@ export default function EditProfileScreen() {
       setLoading(false);
     };
 
+    const loadCities = async () => {
+      const cities = await getCities();
+      setCityItems(cities.map((c: any) => ({ label: c.name, value: c.id })));
+    };
+
     fetchUser();
+    loadCities();
   }, []);
 
   const handleUpdateProfile = async () => {
@@ -45,7 +57,7 @@ export default function EditProfileScreen() {
     }
     setUpdating(true);
     const { data, error } = await supabase.auth.updateUser({
-      data: { first_name: firstName, last_name: lastName }
+      data: { first_name: firstName, last_name: lastName, city_id: city }
     });
     setUpdating(false);
     if (error) {
@@ -65,7 +77,7 @@ export default function EditProfileScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <View style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -80,6 +92,22 @@ export default function EditProfileScreen() {
           onChangeText={setLastName}
         />
 
+        <DropDownPicker
+          open={cityOpen}
+          value={city}
+          items={cityItems}
+          setOpen={setCityOpen}
+          setValue={setCity}
+          setItems={setCityItems}
+          placeholder='Sélectionnez une ville'
+          containerStyle={styles.dropdownContainer}
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownBox}
+          textStyle={{ fontSize: 16, fontFamily: 'Inter-Regular' }}
+          zIndex={2000}
+          zIndexInverse={2000}
+        />
+
         <TouchableOpacity style={styles.button} onPress={handleUpdateProfile} disabled={updating}>
           {updating ? (
             <ActivityIndicator color='#fff' />
@@ -88,20 +116,26 @@ export default function EditProfileScreen() {
           )}
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff'
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
   content: {
     padding: 20
   },
   form: {
     gap: 15
+  },
+  dropdownContainer: { marginBottom: 15 },
+  dropdown: {
+    borderColor: '#ddd',
+    borderRadius: 8,
+    fontSize: 16,
+  },
+  dropdownBox: {
+    borderColor: '#ddd'
   },
   input: {
     height: 50,
