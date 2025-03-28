@@ -96,7 +96,7 @@ export default function EventModifyScreen() {
         'Succès',
         'Événement modifié !'
       );
-      router.push('/events/myevents');
+      router.back();
     } catch (error: any) {
       Alert.alert("Erreur", error.message);
     }
