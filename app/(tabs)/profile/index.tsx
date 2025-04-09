@@ -16,7 +16,7 @@ export default function ProfileScreen() {
     try {
       setLoading(true);
       const u = await fetchUser();
-      setUser(u);
+      setUser(u ?? null);
     } catch (error) {
       console.error('Error fetching session:', error);
     } finally {

@@ -6,17 +6,22 @@ import { eventCreateSchema } from '@/app/validations/validation';
 import { fetchEventDetails, fetchSports, getCities, getUserId, updateEvent } from '@/app/services/supabaseService';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
+type PickerItem = {
+  label: string;
+  value: number;
+};
+
 export default function EventModifyScreen() {
   const router = useRouter();
   const { eventId } = useLocalSearchParams();
 
   const [sportOpen, setSportOpen] = useState(false);
   const [sport, setSport] = useState(0);
-  const [sportItems, setSportItems] = useState([]);
+  const [sportItems, setSportItems] = useState<PickerItem[]>([]);
 
   const [cityOpen, setCityOpen] = useState(false);
   const [city, setCity] = useState(0);
-  const [cityItems, setCityItems] = useState([]);
+  const [cityItems, setCityItems] = useState<PickerItem[]>([]);
 
   const [location, setLocation] = useState('');
   const [participants, setParticipants] = useState('');

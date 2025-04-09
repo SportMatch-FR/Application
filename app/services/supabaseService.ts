@@ -101,7 +101,11 @@ export async function getUserEvents() {
     }
     return data;
   } catch (err) {
-    Alert.alert('Erreur', err.message);
+    if (err instanceof Error) {
+      Alert.alert('Erreur', err.message);
+    } else {
+      Alert.alert('Erreur', 'An unexpected error occurred.');
+    }
     throw err;
   }
 }

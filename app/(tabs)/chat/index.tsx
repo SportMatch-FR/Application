@@ -4,7 +4,7 @@ import { Link } from 'expo-router';
 import { conversationsData } from '@/app/data/data';
 
 export default function ChatListScreen() {
-  const renderConversation = ({ item }) => (
+  const renderConversation = ({ item }: any) => (
     <Link href={`/chat/${item.id}`} asChild>
       <TouchableOpacity style={styles.item}>
         <Text style={styles.title}>

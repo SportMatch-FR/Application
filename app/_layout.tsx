@@ -10,7 +10,7 @@ export default function RootLayout() {
   useFrameworkReady();
 
   const router = useRouter();
-  const segments = useSegments();
+  const segments = useSegments() as string[];
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);

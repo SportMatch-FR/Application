@@ -125,7 +125,7 @@ export default function ChatConversationScreen() {
     setMessage('');
   };
 
-  const formatTimestamp = (timestamp) => {
+  const formatTimestamp = (timestamp: string | number | Date) => {
     const date = new Date(timestamp);
     const now = new Date();
     const isToday = date.toDateString() === now.toDateString();
