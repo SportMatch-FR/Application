@@ -6,6 +6,11 @@ import { editProfileSchema } from '@/app/validations/validation';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { getCities } from '@/app/services/supabaseService';
 
+type CityItem = {
+  label: string;
+  value: number;
+};
+
 export default function EditProfileScreen() {
   const router = useRouter();
   const [firstName, setFirstName] = useState('');
@@ -15,7 +20,7 @@ export default function EditProfileScreen() {
 
   const [cityOpen, setCityOpen] = useState(false);
   const [city, setCity] = useState(0);
-  const [cityItems, setCityItems] = useState([]);
+  const [cityItems, setCityItems] = useState<CityItem[]>([]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -68,7 +73,7 @@ export default function EditProfileScreen() {
   }
 
   return (
-    <View style={styles.container} contentContainerStyle={styles.content}>
+    <View style={styles.container}>
       <View style={styles.form}>
         <TextInput
           style={styles.input}
